@@ -20,6 +20,7 @@ describe('memoize', () => {
 
     describe('should return chached function that', () => {
         function abs(...xs) {
+            if (!xs.length) return 42;
             const power = xs.map(x => x * x).reduce((sum, x) => sum + x);
             return Math.round(Math.sqrt(power));
         }
@@ -131,6 +132,13 @@ describe('memoize', () => {
             absSpy.reset();
             expect(memoizedAbs(3, 4)).to.equal(5); // #2
             sinon.assert.notCalled(absSpy);
+        });
+
+        it('returns correct values in case of no arguments', () => {
+            expect(memoizedAbs()).to.equal(42); // #1
+            expect(memoizedAbs()).to.equal(42); // #2
+            expect(memoizedAbs()).to.equal(42); // #3
+            sinon.assert.callCount(absSpy, 1);
         });
     });
 });
